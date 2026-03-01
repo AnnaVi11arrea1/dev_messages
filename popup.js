@@ -66,14 +66,29 @@ function defaultAvatar(username) {
   return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' rx='20' fill='%233b49df'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' fill='white' font-size='18' font-family='sans-serif'%3E${initial}%3C/text%3E%3C/svg%3E`;
 }
 
+/* ─── Visual preference helpers ────────────────────────────────────────────── */
+function applyBgHue(hue) {
+  document.documentElement.style.setProperty('--bg-hue', hue);
+  const slider = qs('#bg-hue-slider');
+  if (slider) slider.value = hue;
+}
+
+function applyFontSize(size) {
+  document.documentElement.style.setProperty('--font-size', `${size}px`);
+  document.querySelectorAll('.font-size-btn').forEach((btn) => {
+    btn.classList.toggle('active', Number(btn.dataset.size) === size);
+  });
+}
 /* ─── Init ─────────────────────────────────────────────────────────────────── */
 async function init() {
-  /* Apply dark mode before any view renders to avoid flash */
-  const { darkMode } = await chrome.storage.local.get('darkMode');
-  if (darkMode) {
+  /* Apply all visual preferences before any view renders to avoid flash */
+  const prefs = await chrome.storage.local.get(['darkMode', 'bgHue', 'fontSize']);
+  if (prefs.darkMode) {
     document.body.classList.add('dark');
     qs('#dark-toggle').textContent = '☀️ On';
   }
+  applyBgHue(prefs.bgHue ?? 0);
+  applyFontSize(prefs.fontSize ?? 14);
 
   showView('view-loading');
   bindStaticListeners();
@@ -171,6 +186,27 @@ function bindStaticListeners() {
     const isDark = document.body.classList.toggle('dark');
     qs('#dark-toggle').textContent = isDark ? '☀️ On' : '🌙 Off';
     await chrome.storage.local.set({ darkMode: isDark });
+  });
+
+  /* Background hue slider */
+  qs('#bg-hue-slider').addEventListener('input', async (e) => {
+    const hue = Number(e.target.value);
+    applyBgHue(hue);
+    await chrome.storage.local.set({ bgHue: hue });
+  });
+  qs('#bg-hue-reset').addEventListener('click', async () => {
+    applyBgHue(0);
+    qs('#bg-hue-slider').value = 0;
+    await chrome.storage.local.set({ bgHue: 0 });
+  });
+
+  /* Font size buttons */
+  document.querySelectorAll('.font-size-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const size = Number(btn.dataset.size);
+      applyFontSize(size);
+      await chrome.storage.local.set({ fontSize: size });
+    });
   });
 
   /* GIF picker */
@@ -393,14 +429,15 @@ async function loadInbox() {
 
 function buildConvItem(conv) {
   const other    = conv.participants.find((p) => p !== currentUser.username);
-  const lastMsg  = conv.messages[conv.messages.length - 1];
+  const messages = conv.messages || [];
+  const lastMsg  = messages[messages.length - 1];
   const preview  = lastMsg
     ? (() => {
         if (lastMsg.content.startsWith('[gif]:')) return '🎭 Meme';
         return lastMsg.content.length > 42 ? lastMsg.content.slice(0, 42) + '…' : lastMsg.content;
       })()
     : '';
-  const unread   = conv.messages.filter(
+  const unread   = messages.filter(
     (m) => !m.read && m.from !== currentUser.username
   ).length;
   const avatarSrc = conv.participantData?.[other]?.profileImage || defaultAvatar(other);
@@ -440,7 +477,7 @@ function buildConvItem(conv) {
 
 function setBadge(convs) {
   const unread = convs.reduce(
-    (n, c) => n + c.messages.filter((m) => !m.read && m.from !== currentUser.username).length, 0
+    (n, c) => n + (c.messages || []).filter((m) => !m.read && m.from !== currentUser.username).length, 0
   );
   chrome.action.setBadgeText({ text: unread > 0 ? String(unread) : '' });
   if (unread > 0) chrome.action.setBadgeBackgroundColor({ color: '#3b49df' });
@@ -758,6 +795,10 @@ async function toggleBlockUser() {
 /* ─── Settings view ────────────────────────────────────────────────────────── */
 async function openSettings() {
   showView('view-settings');
+  /* Sync slider and font buttons to current saved prefs */
+  const { bgHue = 0, fontSize = 14 } = await chrome.storage.local.get(['bgHue', 'fontSize']);
+  qs('#bg-hue-slider').value = bgHue;
+  applyFontSize(fontSize);
   const list  = qs('#blocked-users-list');
   const empty = qs('#no-blocked-msg');
   list.innerHTML = '<p class="muted small">Loading…</p>';
