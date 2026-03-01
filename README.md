@@ -1,4 +1,4 @@
-# Dev.to Messages
+# Dev.to Messages (Unofficial 3rd Party Extension)
 
 A Chrome extension that adds private direct messaging to [Dev.to](https://dev.to), with built-in link safety, spam reporting, and a first-contact approval system.
 
