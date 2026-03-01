@@ -302,8 +302,14 @@ body {
 .gif-picker-header {
   display: flex; justify-content: space-between; align-items: center;
   padding: 5px 10px; border-bottom: 1px solid #e2e2e2;
-  font-size: 12px; font-weight: 700; color: #3b49df; flex-shrink: 0;
+  font-size: 12px; font-weight: 700; color: #3b49df; flex-shrink: 0; gap: 6px;
 }
+.gif-search-input {
+  flex: 1; font-size: 11px; padding: 3px 7px; border-radius: 12px;
+  border: 1px solid #d1d5db; outline: none; background: #f9fafb;
+  min-width: 0;
+}
+.gif-search-input:focus { border-color: #3b49df; background: #fff; }
 .gif-grid {
   display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start;
   padding: 8px; overflow-y: scroll; flex: 1;
@@ -419,6 +425,8 @@ body.dark .empty-state { color: #64748b; }
 body.dark .center-content h2 { color: #e2e8f0; }
 body.dark .conversations-list::-webkit-scrollbar-thumb,
 body.dark .messages-area::-webkit-scrollbar-thumb,
+body.dark .gif-search-input { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+body.dark .gif-search-input:focus { border-color: #818cf8; }
 body.dark .gif-cell { background: #1e293b; }
 body.dark .gif-grid::-webkit-scrollbar-thumb { background: #334155; }
 body.dark .gif-grid::-webkit-scrollbar-thumb:hover { background: #475569; }

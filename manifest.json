@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Dev.to Messages",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Private direct messaging for Dev.to users with link safety and spam reporting.",
   "permissions": ["storage", "tabs"],
   "host_permissions": ["https://dev.to/*", "https://*.vercel.app/*"],

@@ -55,11 +55,19 @@ const GifPicker = {
     return images;
   },
 
-  /* Recursively walk comment tree and pull every <img src="…"> */
+  /* Recursively walk comment tree and pull every <img src="…"> with its own alt */
   _extractImages(comments, articleTitle, add) {
     for (const comment of comments) {
-      const matches = (comment.body_html || '').matchAll(/<img[^>]+src="([^"]+)"/gi);
-      for (const m of matches) add(m[1], articleTitle);
+      const imgTags = (comment.body_html || '').matchAll(/<img([^>]+)>/gi);
+      for (const m of imgTags) {
+        const attrs  = m[1];
+        const srcM   = attrs.match(/src="([^"]+)"/i);
+        const altM   = attrs.match(/alt="([^"]*)"/i);
+        if (srcM) {
+          const alt = altM?.[1]?.trim() || articleTitle;
+          add(srcM[1], alt);
+        }
+      }
       if (comment.children?.length) {
         this._extractImages(comment.children, articleTitle, add);
       }

@@ -176,6 +176,7 @@ function bindStaticListeners() {
   /* GIF picker */
   qs('#gif-btn').addEventListener('click', toggleGifPicker);
   qs('#gif-close-btn').addEventListener('click', closeGifPicker);
+  qs('#gif-search').addEventListener('input', filterGifs);
 
   /* User search */
   qs('#user-search-btn').addEventListener('click', searchUser);
@@ -252,6 +253,18 @@ async function toggleGifPicker() {
 
 function closeGifPicker() {
   qs('#gif-picker').classList.add('hidden');
+  qs('#gif-search').value = '';
+  filterGifs();
+}
+
+function filterGifs() {
+  const query = qs('#gif-search').value.trim().toLowerCase();
+  const terms = query.split(/\s+/).filter(Boolean);
+  qs('#gif-grid').querySelectorAll('.gif-cell').forEach(cell => {
+    const alt = (cell.querySelector('.gif-thumb')?.alt || '').toLowerCase();
+    const match = !terms.length || terms.every(t => alt.includes(t));
+    cell.style.display = match ? '' : 'none';
+  });
 }
 
 function openLightbox(src) {
