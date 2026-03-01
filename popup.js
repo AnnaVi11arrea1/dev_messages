@@ -156,6 +156,13 @@ async function init() {
   applyBubbleColors(prefs.sentBubbleColor ?? null, prefs.receivedBubbleColor ?? null);
   applyBgGradient(prefs.gradStart ?? null, prefs.gradEnd ?? null, prefs.gradDir ?? '135deg');
 
+  /* If running in a popped-out window, expand to fill and hide popout buttons */
+  const isPopout = new URLSearchParams(location.search).get('popout') === '1';
+  if (isPopout) {
+    document.body.classList.add('popout-mode');
+    document.querySelectorAll('#popout-btn, #conv-popout-btn').forEach(b => b.classList.add('hidden'));
+  }
+
   showView('view-loading');
   bindStaticListeners();
 
@@ -246,6 +253,18 @@ function bindStaticListeners() {
   qs('#back-btn').addEventListener('click', () => { closeGifPicker(); loadInbox(); });
   qs('#new-msg-back-btn').addEventListener('click', loadInbox);
   qs('#new-message-btn').addEventListener('click', openNewMessageView);
+
+  /* Pop-out window */
+  function openPopoutWindow() {
+    chrome.windows.create({
+      url: chrome.runtime.getURL('popup.html?popout=1'),
+      type: 'popup',
+      width: 420,
+      height: 640
+    });
+  }
+  qs('#popout-btn').addEventListener('click', openPopoutWindow);
+  qs('#conv-popout-btn').addEventListener('click', openPopoutWindow);
 
   /* Dark mode toggle */
   qs('#dark-toggle').addEventListener('click', async () => {
