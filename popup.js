@@ -611,8 +611,9 @@ async function searchUser() {
     return;
   }
 
-  const blocked = await Storage.getBlockedUsers();
-  if (blocked.includes(username)) {
+  let blocked = [];
+  try { blocked = await Storage.getBlockedUsers(); } catch { /* non-fatal */ }
+  if (blocked.some((b) => b.username === username)) {
     errEl.textContent = 'This user is blocked.';
     errEl.classList.remove('hidden');
     return;
@@ -655,8 +656,18 @@ async function sendFirstMessage() {
 
   const toUsername = foundUser.username;
   const convId     = Storage.convId(currentUser.username, toUsername);
-  const existing   = await Storage.getConversation(convId);
 
+  /* Check local hidden list first */
+  const { hiddenConvs = [] } = await chrome.storage.local.get('hiddenConvs');
+  if (hiddenConvs.includes(convId)) {
+    /* Unhide and reopen the existing conversation */
+    await chrome.storage.local.set({ hiddenConvs: hiddenConvs.filter((id) => id !== convId) });
+    showToast('Conversation restored.');
+    await openConversation(convId);
+    return;
+  }
+
+  const existing = await Storage.getConversation(convId);
   if (existing) {
     showToast('Conversation already exists.');
     await openConversation(convId);

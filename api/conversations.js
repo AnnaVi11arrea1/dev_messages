@@ -61,7 +61,6 @@ module.exports = async function handler(req, res) {
       FROM conversations c
       LEFT JOIN messages m ON m.conversation_id = c.id
       WHERE ${username} = ANY(c.participants)
-        AND NOT (${username} = ANY(c.hidden_for))
       GROUP BY c.id
       ORDER BY c.last_activity DESC
     `;
