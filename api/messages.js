@@ -40,6 +40,14 @@ module.exports = async function handler(req, res) {
   if (conv[0].status !== 'active')
     return res.status(400).json({ error: 'Conversation not active' });
 
+  /* Check if recipient has blocked the sender */
+  const recipient = conv[0].participants.find((p) => p !== username);
+  const blockRow  = await sql`
+    SELECT 1 FROM blocks WHERE blocker = ${recipient} AND blocked = ${username} LIMIT 1
+  `;
+  if (blockRow.length > 0)
+    return res.status(403).json({ error: 'blocked' });
+
   await sql`
     INSERT INTO messages (id, conversation_id, from_user, content, timestamp, read, flagged, flag_reason)
     VALUES (${id}, ${conversationId}, ${username}, ${content}, ${timestamp}, false, false, '')

@@ -20,5 +20,18 @@ CREATE TABLE IF NOT EXISTS messages (
   flag_reason     TEXT    NOT NULL DEFAULT ''
 );
 
+CREATE TABLE IF NOT EXISTS blocks (
+  blocker     TEXT   NOT NULL,
+  blocked     TEXT   NOT NULL,
+  created_at  BIGINT NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::BIGINT,
+  PRIMARY KEY (blocker, blocked)
+);
+
 CREATE INDEX IF NOT EXISTS idx_conv_participants ON conversations USING GIN (participants);
 CREATE INDEX IF NOT EXISTS idx_msg_conv_id       ON messages (conversation_id);
+CREATE INDEX IF NOT EXISTS idx_blocks_blocker    ON blocks (blocker);
+
+-- Run this if the conversations table already exists (adds soft-delete support):
+ALTER TABLE conversations ADD COLUMN IF NOT EXISTS hidden_for TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];
+-- Backfill any NULLs from before the column existed:
+UPDATE conversations SET hidden_for = ARRAY[]::TEXT[] WHERE hidden_for IS NULL;

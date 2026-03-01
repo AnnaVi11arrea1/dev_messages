@@ -20,16 +20,15 @@ const Storage = {
     await this.set({ currentUser: user });
   },
 
-  /* ── Blocked users (local only) ────────────────────────────────────────── */
+  /* ── Blocked users (server-side) ───────────────────────────────────────── */
   async getBlockedUsers() {
-    const r = await this.get('blockedUsers');
-    return r.blockedUsers || [];
+    return this._api('/blocks');
   },
   async blockUser(username) {
-    const blocked = await this.getBlockedUsers();
-    if (!blocked.includes(username)) {
-      await this.set({ blockedUsers: [...blocked, username] });
-    }
+    await this._api('/blocks', { method: 'POST', body: JSON.stringify({ blocked: username }) });
+  },
+  async unblockUser(username) {
+    await this._api(`/blocks?blocked=${encodeURIComponent(username)}`, { method: 'DELETE' });
   },
 
   /* ── API helpers ───────────────────────────────────────────────────────── */
@@ -80,6 +79,12 @@ const Storage = {
     await this._api(`/conversations/${encodeURIComponent(id)}`, {
       method: 'PATCH',
       body: JSON.stringify({ markRead: true }),
+    });
+  },
+  async deleteConversation(id) {
+    await this._api(`/conversations/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ hideFor: true }),
     });
   },
 

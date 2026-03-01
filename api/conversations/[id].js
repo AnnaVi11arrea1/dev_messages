@@ -73,8 +73,16 @@ module.exports = async function handler(req, res) {
     if (check.length === 0 || !check[0].participants.includes(username))
       return res.status(403).json({ error: 'Forbidden' });
 
-    const { status, markRead } = req.body;
+    const { status, markRead, hideFor } = req.body;
 
+    if (hideFor) {
+      /* Soft-delete: add caller to hidden_for so it disappears only for them */
+      await sql`
+        UPDATE conversations
+        SET hidden_for = array_append(hidden_for, ${username})
+        WHERE id = ${id} AND NOT (${username} = ANY(hidden_for))
+      `;
+    }
     if (status) {
       await sql`UPDATE conversations SET status = ${status} WHERE id = ${id}`;
     }

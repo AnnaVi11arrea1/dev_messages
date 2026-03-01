@@ -72,7 +72,7 @@ async function init() {
   const { darkMode } = await chrome.storage.local.get('darkMode');
   if (darkMode) {
     document.body.classList.add('dark');
-    qs('#dark-toggle').textContent = '☀️';
+    qs('#dark-toggle').textContent = '☀️ On';
   }
 
   showView('view-loading');
@@ -169,7 +169,7 @@ function bindStaticListeners() {
   /* Dark mode toggle */
   qs('#dark-toggle').addEventListener('click', async () => {
     const isDark = document.body.classList.toggle('dark');
-    qs('#dark-toggle').textContent = isDark ? '☀️' : '🌙';
+    qs('#dark-toggle').textContent = isDark ? '☀️ On' : '🌙 Off';
     await chrome.storage.local.set({ darkMode: isDark });
   });
 
@@ -194,6 +194,16 @@ function bindStaticListeners() {
   /* Approval */
   qs('#approve-btn').addEventListener('click', () => handleApproval(true));
   qs('#deny-btn').addEventListener('click',    () => handleApproval(false));
+
+  /* Delete conversation */
+  qs('#delete-conv-btn').addEventListener('click', deleteConversation);
+
+  /* Block user */
+  qs('#block-user-btn').addEventListener('click', toggleBlockUser);
+
+  /* Settings */
+  qs('#settings-btn').addEventListener('click', openSettings);
+  qs('#settings-back-btn').addEventListener('click', loadInbox);
 
   /* Link warning modal */
   qs('#link-cancel-btn').addEventListener('click', () =>
@@ -332,8 +342,11 @@ async function loadInbox() {
     showToast(`Failed to load inbox: ${err.message}`, 'error');
     return;
   }
+
+  /* Also filter any locally-hidden conversation IDs (client-side safety net) */
+  const { hiddenConvs = [] } = await chrome.storage.local.get('hiddenConvs');
   const myConvs  = Object.values(allConvs)
-    .filter((c) => c.participants.includes(currentUser.username));
+    .filter((c) => c.participants.includes(currentUser.username) && !hiddenConvs.includes(c.id));
 
   /* Incoming pending (recipient hasn't acted yet) */
   const pendingIn = myConvs.filter(
@@ -443,10 +456,19 @@ async function openConversation(convId) {
   if (!conv) { showToast('Conversation not found.', 'error'); loadInbox(); return; }
 
   const other = conv.participants.find((p) => p !== currentUser.username);
+  convOtherUser = other;
   const av    = qs('#conv-avatar');
   av.src = conv.participantData?.[other]?.profileImage || defaultAvatar(other);
   av.alt = other;
   qs('#conv-username').textContent = `@${other}`;
+
+  /* Sync block button state */
+  const blocked = await Storage.getBlockedUsers().catch(() => []);
+  const isBlocked = blocked.some((b) => b.username === other);
+  const blockBtn = qs('#block-user-btn');
+  blockBtn.dataset.blocked = isBlocked ? 'true' : 'false';
+  blockBtn.title = isBlocked ? `Unblock @${other}` : `Block @${other}`;
+  blockBtn.style.color = isBlocked ? '#ef4444' : '#f59e0b';
 
   /* Mark messages as read (fire-and-forget; update locally for instant feedback) */
   conv.messages.forEach((m) => { if (m.from !== currentUser.username) m.read = true; });
@@ -464,12 +486,19 @@ function renderConversationState(conv) {
 
   if (conv.status === 'pending') {
     if (conv.initiator !== currentUser.username) {
-      /* Recipient – show approve / deny */
+      /* Recipient – show approve / deny + full first message preview */
       const firstMsg = conv.messages[0];
-      qs('#approval-msg').textContent =
-        `@${conv.initiator} wants to message you: "${firstMsg?.content?.slice(0, 70) || '…'}"`;
+      const preview  = firstMsg
+        ? (firstMsg.content.startsWith('[gif]:')
+            ? '🎭 <em>(sent a meme)</em>'
+            : LinkSafety.renderContent(firstMsg.content))
+        : '…';
+      qs('#approval-msg').innerHTML =
+        `<strong>@${conv.initiator}</strong> wants to message you:<br>
+         <div class="approval-preview">${preview}</div>`;
       qs('#approval-bar').classList.remove('hidden');
     } else {
+      /* Initiator – waiting; input locked */
       qs('#awaiting-bar').classList.remove('hidden');
     }
   } else if (conv.status === 'denied') {
@@ -661,6 +690,96 @@ async function sendFirstMessage() {
   foundUser = null;
   showToast('Message request sent!', 'success');
   await openConversation(convId);
+}
+
+/* ─── Delete conversation ──────────────────────────────────────────────────── */
+async function deleteConversation() {
+  if (!activeConvId) return;
+  if (!confirm('Delete this conversation? This cannot be undone.')) return;
+  const convId = activeConvId;
+  try {
+    await Storage.deleteConversation(convId);
+  } catch (err) {
+    /* Non-fatal – still hide it locally */
+    console.warn('[delete] server error, hiding locally:', err.message);
+  }
+  /* Always hide locally so it disappears even if server filter lags */
+  const { hiddenConvs = [] } = await chrome.storage.local.get('hiddenConvs');
+  if (!hiddenConvs.includes(convId)) {
+    await chrome.storage.local.set({ hiddenConvs: [...hiddenConvs, convId] });
+  }
+  showToast('Conversation deleted.');
+  loadInbox();
+}
+
+/* ─── Block / Unblock ──────────────────────────────────────────────────────── */
+let convOtherUser = null; // username of the other participant in the open conversation
+
+async function toggleBlockUser() {
+  if (!convOtherUser) return;
+  const btn = qs('#block-user-btn');
+  const isBlocking = btn.dataset.blocked !== 'true';
+
+  const action = isBlocking
+    ? `Block @${convOtherUser}? They won't be able to message you.`
+    : `Unblock @${convOtherUser}?`;
+  if (!confirm(action)) return;
+
+  try {
+    if (isBlocking) {
+      await Storage.blockUser(convOtherUser);
+      btn.dataset.blocked = 'true';
+      btn.title = `Unblock @${convOtherUser}`;
+      btn.style.color = '#ef4444';
+      showToast(`@${convOtherUser} blocked.`);
+    } else {
+      await Storage.unblockUser(convOtherUser);
+      btn.dataset.blocked = 'false';
+      btn.title = `Block @${convOtherUser}`;
+      btn.style.color = '#f59e0b';
+      showToast(`@${convOtherUser} unblocked.`);
+    }
+  } catch (err) {
+    showToast(`Failed: ${err.message}`, 'error');
+  }
+}
+
+/* ─── Settings view ────────────────────────────────────────────────────────── */
+async function openSettings() {
+  showView('view-settings');
+  const list  = qs('#blocked-users-list');
+  const empty = qs('#no-blocked-msg');
+  list.innerHTML = '<p class="muted small">Loading…</p>';
+  try {
+    const blocked = await Storage.getBlockedUsers();
+    list.innerHTML = '';
+    if (!blocked.length) {
+      list.appendChild(empty);
+      empty.classList.remove('hidden');
+      return;
+    }
+    for (const { username } of blocked) {
+      const row = document.createElement('div');
+      row.className = 'blocked-user-row';
+      row.innerHTML = `
+        <span class="blocked-username">@${username}</span>
+        <button class="btn btn-sm btn-secondary unblock-btn" data-username="${username}">Unblock</button>
+      `;
+      row.querySelector('.unblock-btn').addEventListener('click', async () => {
+        try {
+          await Storage.unblockUser(username);
+          row.remove();
+          if (!list.querySelector('.blocked-user-row')) list.appendChild(empty);
+          showToast(`@${username} unblocked.`);
+        } catch (err) {
+          showToast(`Failed: ${err.message}`, 'error');
+        }
+      });
+      list.appendChild(row);
+    }
+  } catch (err) {
+    list.innerHTML = `<p class="error-text">Failed to load: ${err.message}</p>`;
+  }
 }
 
 /* ─── Flag / Report ────────────────────────────────────────────────────────── */

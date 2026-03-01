@@ -61,6 +61,7 @@ module.exports = async function handler(req, res) {
       FROM conversations c
       LEFT JOIN messages m ON m.conversation_id = c.id
       WHERE ${username} = ANY(c.participants)
+        AND NOT (${username} = ANY(c.hidden_for))
       GROUP BY c.id
       ORDER BY c.last_activity DESC
     `;
@@ -83,6 +84,14 @@ module.exports = async function handler(req, res) {
 
     if (!participants.includes(username))
       return res.status(403).json({ error: 'Not a participant' });
+
+    /* Check if recipient has blocked the initiator */
+    const recipient = participants.find((p) => p !== username);
+    const blockRow  = await sql`
+      SELECT 1 FROM blocks WHERE blocker = ${recipient} AND blocked = ${username} LIMIT 1
+    `;
+    if (blockRow.length > 0)
+      return res.status(403).json({ error: 'blocked' });
 
     /* Validate first message content */
     if (messages && messages.length > 0) {

@@ -49,8 +49,8 @@
         <span id="inbox-username" class="username"></span>
       </div>
       <div style="display:flex;gap:4px;align-items:center">
-        <button id="dark-toggle" class="btn btn-icon" title="Toggle dark mode">🌙</button>
-        <button id="new-message-btn" class="btn btn-icon" title="New Message">✉️ New</button>
+        <button id="settings-btn" class="btn btn-icon" title="Settings">⚙️</button>
+        <button id="new-message-btn" class="btn btn-icon" title="New Message">🌱 New</button>
       </div>
     </div>
 
@@ -62,7 +62,7 @@
     <div id="conversations-list" class="conversations-list">
       <div id="empty-inbox" class="empty-state">
         <p>📭 No messages yet.</p>
-        <p class="muted">Click <strong>✉️ New</strong> to start a conversation.</p>
+        <p class="muted">Click <strong>⭐️ New</strong> to start a conversation.</p>
       </div>
     </div>
   </div>
@@ -75,6 +75,8 @@
         <img id="conv-avatar" class="avatar" src="" alt="avatar" />
         <span id="conv-username" class="username"></span>
       </div>
+      <button id="delete-conv-btn" class="btn btn-icon" title="Delete conversation" style="color:#ef4444">🗑️</button>
+      <button id="block-user-btn" class="btn btn-icon" title="Block user" style="color:#f59e0b">🚫</button>
     </div>
 
     <!-- Shown to the recipient before they approve/deny -->
@@ -93,7 +95,7 @@
 
     <!-- Shown when request was denied -->
     <div id="denied-bar" class="status-bar denied-bar hidden">
-      ❌ Your message request was denied.
+      ❌ Your message request was rejected.
     </div>
 
     <div id="messages-area" class="messages-area"></div>
@@ -110,7 +112,7 @@
     </div>
 
     <div id="message-input-area" class="message-input-area hidden">
-      <button id="gif-btn" class="btn btn-icon" title="Send a meme">🎭</button>
+      <button id="gif-btn" class="btn btn-icon" title="Send a meme"  style="font-size: 30px;">🎭</button>
       <textarea id="message-input" class="message-textarea" placeholder="Type a message… (Enter to send, Shift+Enter for newline)" rows="2"></textarea>
       <button id="send-btn" class="btn btn-primary">Send</button>
     </div>
@@ -183,6 +185,29 @@
       <div class="modal-footer">
         <button id="flag-cancel-btn" class="btn btn-secondary">Cancel</button>
         <button id="flag-submit-btn" class="btn btn-danger">Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ VIEW: Settings ════════════════════════════════════════════════════ -->
+  <div id="view-settings" class="view">
+    <div class="header">
+      <button id="settings-back-btn" class="btn btn-icon">← Back</button>
+      <h1 class="header-title">Settings</h1>
+    </div>
+    <div class="content-pad">
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">🌙 Dark Mode</div>
+          <div class="muted small">Switch between light and dark theme.</div>
+        </div>
+        <button id="dark-toggle" class="btn btn-secondary btn-sm">🌙 Off</button>
+      </div>
+
+      <h3 class="settings-section-title" style="margin-top:16px">🚫 Blocked Users</h3>
+      <p class="muted small">Blocked users cannot send you message requests or messages.</p>
+      <div id="blocked-users-list" class="blocked-users-list">
+        <p class="muted small" id="no-blocked-msg">No blocked users.</p>
       </div>
     </div>
   </div>
