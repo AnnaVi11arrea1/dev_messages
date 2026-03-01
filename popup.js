@@ -68,6 +68,13 @@ function defaultAvatar(username) {
 
 /* ─── Init ─────────────────────────────────────────────────────────────────── */
 async function init() {
+  /* Apply dark mode before any view renders to avoid flash */
+  const { darkMode } = await chrome.storage.local.get('darkMode');
+  if (darkMode) {
+    document.body.classList.add('dark');
+    qs('#dark-toggle').textContent = '☀️';
+  }
+
   showView('view-loading');
   bindStaticListeners();
 
@@ -155,9 +162,20 @@ function bindStaticListeners() {
     e.preventDefault();
     chrome.tabs.create({ url: 'https://dev.to' });
   });
-  qs('#back-btn').addEventListener('click', loadInbox);
+  qs('#back-btn').addEventListener('click', () => { closeGifPicker(); loadInbox(); });
   qs('#new-msg-back-btn').addEventListener('click', loadInbox);
   qs('#new-message-btn').addEventListener('click', openNewMessageView);
+
+  /* Dark mode toggle */
+  qs('#dark-toggle').addEventListener('click', async () => {
+    const isDark = document.body.classList.toggle('dark');
+    qs('#dark-toggle').textContent = isDark ? '☀️' : '🌙';
+    await chrome.storage.local.set({ darkMode: isDark });
+  });
+
+  /* GIF picker */
+  qs('#gif-btn').addEventListener('click', toggleGifPicker);
+  qs('#gif-close-btn').addEventListener('click', closeGifPicker);
 
   /* User search */
   qs('#user-search-btn').addEventListener('click', searchUser);
@@ -213,6 +231,42 @@ function bindStaticListeners() {
       e.target.src = defaultAvatar(e.target.alt || '?');
     }
   }, true);
+}
+
+/* ─── GIF Picker ───────────────────────────────────────────────────────────── */
+async function toggleGifPicker() {
+  const picker = qs('#gif-picker');
+  if (!picker.classList.contains('hidden')) { closeGifPicker(); return; }
+  picker.classList.remove('hidden');
+  if (!GifPicker._cache) await loadGifGrid();
+}
+
+function closeGifPicker() {
+  qs('#gif-picker').classList.add('hidden');
+}
+
+async function loadGifGrid() {
+  const grid = qs('#gif-grid');
+  grid.innerHTML = '<p class="gif-loading">Loading memes…</p>';
+  const images = await GifPicker.fetchImages();
+  grid.innerHTML = '';
+  if (!images.length) {
+    grid.innerHTML = '<p class="gif-loading">No memes found.</p>';
+    return;
+  }
+  for (const { url, title } of images) {
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = title;
+    img.title = title;
+    img.className = 'gif-thumb';
+    img.addEventListener('click', () => {
+      qs('#message-input').value = `[gif]:${url}`;
+      closeGifPicker();
+      sendReply();
+    });
+    grid.appendChild(img);
+  }
 }
 
 /* ─── Inbox ────────────────────────────────────────────────────────────────── */
@@ -281,7 +335,10 @@ function buildConvItem(conv) {
   const other    = conv.participants.find((p) => p !== currentUser.username);
   const lastMsg  = conv.messages[conv.messages.length - 1];
   const preview  = lastMsg
-    ? (lastMsg.content.length > 42 ? lastMsg.content.slice(0, 42) + '…' : lastMsg.content)
+    ? (() => {
+        if (lastMsg.content.startsWith('[gif]:')) return '🎭 Meme';
+        return lastMsg.content.length > 42 ? lastMsg.content.slice(0, 42) + '…' : lastMsg.content;
+      })()
     : '';
   const unread   = conv.messages.filter(
     (m) => !m.read && m.from !== currentUser.username

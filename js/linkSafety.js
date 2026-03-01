@@ -31,6 +31,12 @@ const LinkSafety = {
    * instead of navigating directly; no inline handlers are used.
    */
   renderContent(text) {
+    /* GIF / meme messages */
+    if (/^\[gif\]:https?:\/\//i.test(text)) {
+      const url = this.escapeHtml(text.slice(6));
+      return `<img class="msg-gif" src="${url}" alt="meme" loading="lazy" />`;
+    }
+
     const escaped = this.escapeHtml(text);
     const urlRegex = /(https?:\/\/[^\s<>"&]+)/gi;
     return escaped.replace(urlRegex, (url) => {

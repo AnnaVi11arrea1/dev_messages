@@ -48,7 +48,10 @@
         <div id="inbox-avatar" class="inbox-online-dot"></div>
         <span id="inbox-username" class="username"></span>
       </div>
-      <button id="new-message-btn" class="btn btn-icon" title="New Message">✉️ New</button>
+      <div style="display:flex;gap:4px;align-items:center">
+        <button id="dark-toggle" class="btn btn-icon" title="Toggle dark mode">🌙</button>
+        <button id="new-message-btn" class="btn btn-icon" title="New Message">✉️ New</button>
+      </div>
     </div>
 
     <div id="pending-requests-section" class="hidden">
@@ -95,7 +98,18 @@
 
     <div id="messages-area" class="messages-area"></div>
 
+    <div id="gif-picker" class="gif-picker hidden">
+      <div class="gif-picker-header">
+        <span>🎭 Meme Monday</span>
+        <button id="gif-close-btn" class="btn btn-icon" style="padding:2px 6px">✕</button>
+      </div>
+      <div id="gif-grid" class="gif-grid">
+        <p class="gif-loading">Loading memes…</p>
+      </div>
+    </div>
+
     <div id="message-input-area" class="message-input-area hidden">
+      <button id="gif-btn" class="btn btn-icon" title="Send a meme">🎭</button>
       <textarea id="message-input" class="message-textarea" placeholder="Type a message… (Enter to send, Shift+Enter for newline)" rows="2"></textarea>
       <button id="send-btn" class="btn btn-primary">Send</button>
     </div>
@@ -180,6 +194,7 @@
   <script src="js/storage.js"></script>
   <script src="js/eligibility.js"></script>
   <script src="js/linkSafety.js"></script>
+  <script src="js/gifPicker.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
