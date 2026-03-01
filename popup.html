@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon"  href="icons/dwicon.png" type="image/x-icon"/>
+  <link rel="icon" href="icons/dwicon.png" type="image/x-icon" />
   <title>Dev Whisper, 3rd Party Messaging Extension for Dev.to</title>
   <link rel="stylesheet" href="popup.css" />
 </head>
+
 <body>
 
   <!-- ═══ VIEW: Loading ═══════════════════════════════════════════════════ -->
@@ -51,9 +53,25 @@
         <span id="inbox-username" class="username"></span>
       </div>
       <div style="display:flex;gap:4px;align-items:center">
-        <button id="popout-btn" class="btn btn-icon" title="Pop out to window"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 0-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg></button>
-        <button id="settings-btn" class="btn btn-icon" title="Settings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/></svg></button>
-        <button id="new-message-btn" class="btn btn-icon" title="New Message"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/></svg> New</button>
+        <button id="popout-btn" class="btn btn-icon" title="Pop out to window"><svg xmlns="http://www.w3.org/2000/svg"
+            width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 0-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" />
+            <path fill-rule="evenodd"
+              d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" />
+          </svg></button>
+        <button id="settings-btn" class="btn btn-icon" title="Settings"><svg xmlns="http://www.w3.org/2000/svg"
+            width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+            <path
+              d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
+            <path
+              d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z" />
+          </svg></button>
+        <button id="new-message-btn" class="btn btn-icon" title="New Message"><svg xmlns="http://www.w3.org/2000/svg"
+            width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+            <path
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+          </svg> New</button>
       </div>
     </div>
 
@@ -78,10 +96,34 @@
         <img id="conv-avatar" class="avatar" src="" alt="avatar" />
         <span id="conv-username" class="username"></span>
       </div>
-      <button id="conv-popout-btn" class="btn btn-icon" title="Pop out to window"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 0-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg></button>
-      <button id="bubble-color-btn" class="btn btn-icon" title="Change bubble colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet-half" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0q.164.544.371 1.038c.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8m.413 1.021A31 31 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10c0 0 2.5 1.5 5 .5s5-.5 5-.5c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/><path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87z"/></svg></button>
-      <button id="delete-conv-btn" class="btn btn-icon" title="Delete conversation" style="color:#ef4444"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16"><path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/></svg></button>
-      <button id="block-user-btn" class="btn btn-icon" title="Block user" style="color:#f59e0b"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ban" viewBox="0 0 16 16"><path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/></svg></button>
+      <button id="conv-popout-btn" class="btn btn-icon" title="Pop out to window"><svg
+          xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right"
+          viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 0-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" />
+          <path fill-rule="evenodd"
+            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" />
+        </svg></button>
+      <button id="bubble-color-btn" class="btn btn-icon" title="Change bubble colors"><svg
+          xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet-half"
+          viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M7.21.8C7.69.295 8 0 8 0q.164.544.371 1.038c.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8m.413 1.021A31 31 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10c0 0 2.5 1.5 5 .5s5-.5 5-.5c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z" />
+          <path fill-rule="evenodd"
+            d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87z" />
+        </svg></button>
+      <button id="delete-conv-btn" class="btn btn-icon" title="Delete conversation" style="color:#ef4444"><svg
+          xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3"
+          viewBox="0 0 16 16">
+          <path
+            d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+        </svg></button>
+      <button id="block-user-btn" class="btn btn-icon" title="Block user" style="color:#f59e0b"><svg
+          xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ban"
+          viewBox="0 0 16 16">
+          <path
+            d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
+        </svg></button>
     </div>
     <div id="bubble-color-panel" class="bubble-color-panel hidden">
       <div class="bubble-color-row">
@@ -137,7 +179,11 @@
 
     <!-- Shown when the other user has blocked the current user -->
     <div id="blocked-by-notice" class="blocked-by-notice hidden">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-ban" viewBox="0 0 16 16"><path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-ban"
+        viewBox="0 0 16 16">
+        <path
+          d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
+      </svg>
       <span id="blocked-by-text">You can no longer send messages to this user.</span>
     </div>
 
@@ -159,11 +205,24 @@
         </div>
         <div id="emoji-grid" class="emoji-grid"></div>
       </div>
-      <textarea id="message-input" class="message-textarea" placeholder="Type a message… (Enter to send, Shift+Enter for newline)" rows="2"></textarea>
+      <textarea id="message-input" class="message-textarea"
+        placeholder="Type a message… (Enter to send, Shift+Enter for newline)" rows="2"></textarea>
       <div class="input-actions">
         <div class="input-action-btns">
-          <button id="emoji-btn" class="btn btn-icon" title="Emoji" style="font-size:18px;padding:3px 6px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-smile" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/><path d="M4.285 9.567a.5.5 0 0 1 .683.183A3.5 3.5 0 0 0 8 11.5a3.5 3.5 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5m4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5"/></svg></button>
-          <button id="gif-btn" class="btn btn-icon" title="Send a meme" style="font-size:18px;padding:3px 6px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/></svg></button>
+          <button id="emoji-btn" class="btn btn-icon" title="Emoji" style="font-size:18px;padding:3px 6px"><svg
+              xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-smile"
+              viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+              <path
+                d="M4.285 9.567a.5.5 0 0 1 .683.183A3.5 3.5 0 0 0 8 11.5a3.5 3.5 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5m4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5" />
+            </svg></button>
+          <button id="gif-btn" class="btn btn-icon" title="Send a meme" style="font-size:18px;padding:3px 6px"><svg
+              xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image"
+              viewBox="0 0 16 16">
+              <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+              <path
+                d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z" />
+            </svg></button>
         </div>
         <button id="send-btn" class="btn btn-primary" style="width:100%">Send</button>
       </div>
@@ -184,7 +243,8 @@
       <p id="user-search-error" class="error-text hidden"></p>
       <div id="user-search-result" class="hidden">
         <div id="found-user-card" class="user-card"></div>
-        <textarea id="first-message-input" class="message-textarea" placeholder="Write your first message…" rows="4"></textarea>
+        <textarea id="first-message-input" class="message-textarea" placeholder="Write your first message…"
+          rows="4"></textarea>
         <button id="send-first-btn" class="btn btn-primary btn-full">Send Message Request</button>
       </div>
     </div>
@@ -203,7 +263,8 @@
           Verify the destination URL before proceeding.
         </p>
         <div id="spoof-warning" class="spoof-warning hidden">
-          <strong>🚨 Possible spoofed link!</strong> The visible text shows a different domain than the actual destination.
+          <strong>🚨 Possible spoofed link!</strong> The visible text shows a different domain than the actual
+          destination.
         </div>
         <div class="link-info">
           <span class="link-label">Destination URL</span>
@@ -248,73 +309,82 @@
       <h1 class="header-title">Settings</h1>
     </div>
     <div class="content-pad">
-      <div class="settings-row">
+      <div class="settings-row donate-row">
         <div>
-          <div class="settings-row-label">🌙 Dark Mode</div>
-          <div class="muted small">Switch between light and dark theme.</div>
+          <div class="settings-row-label">❤️ Support Dev Whisper</div>
+          <div class="muted small">If you enjoy the extension, consider a small donation!</div>
         </div>
-        <button id="dark-toggle" class="btn btn-secondary btn-sm">🌙 Off</button>
+        <button id="donate-btn" class="btn btn-primary btn-sm">Donate via PayPal</button>
       </div>
 
-      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px">
-        <div class="settings-row-label">🎨 Background Color</div>
-        <div class="muted small">Hue — drag to shift the color.</div>
-        <div style="display:flex;align-items:center;gap:10px;width:100%">
-          <input type="range" id="bg-hue-slider" min="0" max="360" value="0" class="hue-slider" />
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">🌙 Dark Mode</div>
+            <div class="muted small">Switch between light and dark theme.</div>
+          </div>
+          <button id="dark-toggle" class="btn btn-secondary btn-sm">🌙 Off</button>
         </div>
-        <div class="muted small">Saturation — drag to intensify.</div>
-        <div style="display:flex;align-items:center;gap:10px;width:100%">
-          <input type="range" id="bg-sat-slider" min="0" max="100" value="0" class="sat-slider" />
-          <button id="bg-color-reset" class="btn btn-secondary btn-sm" title="Reset to default">↺</button>
-        </div>
-      </div>
 
-      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px">
-        <div class="settings-row-label">🖊️ Text Color</div>
-        <div class="muted small">Hue — drag to shift the color.</div>
-        <div style="display:flex;align-items:center;gap:10px;width:100%">
-          <input type="range" id="text-hue-slider" min="0" max="360" value="0" class="hue-slider" />
+        <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px">
+          <div class="settings-row-label">🎨 Background Color</div>
+          <div class="muted small">Hue — drag to shift the color.</div>
+          <div style="display:flex;align-items:center;gap:10px;width:100%">
+            <input type="range" id="bg-hue-slider" min="0" max="360" value="0" class="hue-slider" />
+          </div>
+          <div class="muted small">Saturation — drag to intensify.</div>
+          <div style="display:flex;align-items:center;gap:10px;width:100%">
+            <input type="range" id="bg-sat-slider" min="0" max="100" value="0" class="sat-slider" />
+            <button id="bg-color-reset" class="btn btn-secondary btn-sm" title="Reset to default">↺</button>
+          </div>
         </div>
-        <div class="muted small">Saturation — drag to intensify.</div>
-        <div style="display:flex;align-items:center;gap:10px;width:100%">
-          <input type="range" id="text-sat-slider" min="0" max="100" value="0" class="sat-slider" />
-          <button id="text-color-reset" class="btn btn-secondary btn-sm" title="Reset to default">↺</button>
-        </div>
-      </div>
 
-      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px">
-        <div class="muted small">Adjust text size for readability.</div>
-        <div class="font-size-options">
-          <button class="btn btn-secondary btn-sm font-size-btn" data-size="12">A<sub>S</sub></button>
-          <button class="btn btn-secondary btn-sm font-size-btn" data-size="14">A</button>
-          <button class="btn btn-secondary btn-sm font-size-btn" data-size="16">A<sup>+</sup></button>
-          <button class="btn btn-secondary btn-sm font-size-btn" data-size="18">A<sup>++</sup></button>
+        <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px">
+          <div class="settings-row-label">🖊️ Text Color</div>
+          <div class="muted small">Hue — drag to shift the color.</div>
+          <div style="display:flex;align-items:center;gap:10px;width:100%">
+            <input type="range" id="text-hue-slider" min="0" max="360" value="0" class="hue-slider" />
+          </div>
+          <div class="muted small">Saturation — drag to intensify.</div>
+          <div style="display:flex;align-items:center;gap:10px;width:100%">
+            <input type="range" id="text-sat-slider" min="0" max="100" value="0" class="sat-slider" />
+            <button id="text-color-reset" class="btn btn-secondary btn-sm" title="Reset to default">↺</button>
+          </div>
         </div>
-      </div>
 
-      <h3 class="settings-section-title" style="margin-top:16px">Blocked Users</h3>
-      <p class="muted small">Blocked users cannot send you message requests or messages.</p>
-      <div id="blocked-users-list" class="blocked-users-list">
-        <p class="muted small" id="no-blocked-msg">No blocked users.</p>
+        <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px">
+          <div class="muted small">Adjust text size for readability.</div>
+          <div class="font-size-options">
+            <button class="btn btn-secondary btn-sm font-size-btn" data-size="12">A<sub>S</sub></button>
+            <button class="btn btn-secondary btn-sm font-size-btn" data-size="14">A</button>
+            <button class="btn btn-secondary btn-sm font-size-btn" data-size="16">A<sup>+</sup></button>
+            <button class="btn btn-secondary btn-sm font-size-btn" data-size="18">A<sup>++</sup></button>
+          </div>
+        </div>
+
+        <h3 class="settings-section-title" style="margin-top:16px">Blocked Users</h3>
+        <p class="muted small">Blocked users cannot send you message requests or messages.</p>
+        <div id="blocked-users-list" class="blocked-users-list">
+          <p class="muted small" id="no-blocked-msg">No blocked users.</p>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Toast notification -->
-  <div id="toast" class="toast hidden"></div>
+    <!-- Toast notification -->
+    <div id="toast" class="toast hidden"></div>
 
-  <!-- ═══ Meme Lightbox ═══════════════════════════════════════════════════ -->
-  <div id="meme-lightbox" class="hidden">
-    <button id="meme-lightbox-close">✕</button>
-    <img id="meme-lightbox-img" src="" alt="meme preview" />
-  </div>
+    <!-- ═══ Meme Lightbox ═══════════════════════════════════════════════════ -->
+    <div id="meme-lightbox" class="hidden">
+      <button id="meme-lightbox-close">✕</button>
+      <img id="meme-lightbox-img" src="" alt="meme preview" />
+    </div>
 
-  <!-- Scripts (order matters — utilities before app) -->
-  <script src="js/config.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/eligibility.js"></script>
-  <script src="js/linkSafety.js"></script>
-  <script src="js/gifPicker.js"></script>
-  <script src="popup.js"></script>
+    <!-- Scripts (order matters — utilities before app) -->
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/eligibility.js"></script>
+    <script src="js/linkSafety.js"></script>
+    <script src="js/gifPicker.js"></script>
+    <script src="popup.js"></script>
 </body>
+
 </html>

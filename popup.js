@@ -410,6 +410,9 @@ function bindStaticListeners() {
   /* Settings */
   qs('#settings-btn').addEventListener('click', openSettings);
   qs('#settings-back-btn').addEventListener('click', loadInbox);
+  qs('#donate-btn').addEventListener('click', () => {
+    chrome.tabs.create({ url: 'https://www.paypal.com/ncp/payment/NZELSQ7ST82WU' });
+  });
 
   /* Link warning modal */
   qs('#link-cancel-btn').addEventListener('click', () =>

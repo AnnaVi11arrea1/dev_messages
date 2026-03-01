@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy</title>
+  <link rel="icon"  href="./dwicon.png" type="image/x-icon"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0f1117;
+      --ink-muted: #4a4f5e;
+      --ink-faint: #9099ab;
+      --bg: #f7f6f2;
+      --bg-card: #ffffff;
+      --accent: #000000;
+      --accent-light: #e8edf7;
+      --accent-mid: #4a6fa5;
+      --rule: #dddbd4;
+      --tag-bg: #e3ebf7;
+      --tag-text: #1a3a6b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--accent);
+      color: #fff;
+      padding: 72px 48px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(74,111,165,0.5) 0%, transparent 65%),
+                  radial-gradient(ellipse at 10% 90%, rgba(255,255,255,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 40px;
+      background: var(--bg);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    .header-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 16px;
+    }
+
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    header h1 em {
+      font-style: italic;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .badge svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* ── LAYOUT ── */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 56px 24px 100px;
+    }
+
+    /* ── TABLE OF CONTENTS ── */
+    .toc {
+      background: var(--bg-card);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 56px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .toc-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 16px;
+    }
+
+    .toc-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 24px;
+      list-style: none;
+    }
+
+    @media (max-width: 560px) {
+      .toc-list { grid-template-columns: 1fr; }
+    }
+
+    .toc-list a {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 3px 0;
+      transition: color 0.15s;
+    }
+
+    .toc-list a:hover { color: var(--accent-mid); }
+
+    .toc-num {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-faint);
+      min-width: 18px;
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      margin-bottom: 52px;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section:nth-child(1) { animation-delay: 0.05s; }
+    .section:nth-child(2) { animation-delay: 0.10s; }
+    .section:nth-child(3) { animation-delay: 0.15s; }
+    .section:nth-child(4) { animation-delay: 0.20s; }
+    .section:nth-child(5) { animation-delay: 0.25s; }
+    .section:nth-child(6) { animation-delay: 0.30s; }
+    .section:nth-child(7) { animation-delay: 0.35s; }
+    .section:nth-child(8) { animation-delay: 0.40s; }
+    .section:nth-child(9) { animation-delay: 0.45s; }
+    .section:nth-child(10) { animation-delay: 0.50s; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      background: var(--accent-light);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent-mid);
+      margin: 24px 0 10px;
+    }
+
+    p {
+      font-size: 15.5px;
+      color: var(--ink-muted);
+      margin-bottom: 14px;
+      font-weight: 300;
+    }
+
+    /* ── HIGHLIGHT BLOCK ── */
+    .highlight {
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 18px 22px;
+      margin: 18px 0;
+    }
+
+    .highlight p {
+      margin: 0;
+      color: var(--accent);
+      font-size: 14.5px;
+      font-weight: 400;
+    }
+
+    /* ── ENCRYPTION CARD ── */
+    .encryption-card {
+      background: var(--accent);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin: 20px 0;
+      color: #fff;
+    }
+
+    .encryption-card .lock-icon {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .encryption-card .lock-icon svg { width: 22px; height: 22px; }
+
+    .encryption-card h3 {
+      color: #fff;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 1.05rem;
+      margin: 0 0 10px;
+    }
+
+    .encryption-card p {
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .encryption-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .encryption-card ul li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 10px;
+      font-weight: 300;
+    }
+
+    .encryption-card ul li::before {
+      content: '';
+      display: block;
+      width: 16px; height: 16px;
+      min-width: 16px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 50%;
+      margin-top: 3px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.5 8l3 3 6-6' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+    /* ── BULLET LIST ── */
+    ul.policy-list {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 16px;
+    }
+
+    ul.policy-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+      color: var(--ink-muted);
+      font-weight: 300;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    ul.policy-list li:last-child { border-bottom: none; }
+
+    ul.policy-list li::before {
+      content: '';
+      display: block;
+      width: 6px; height: 6px;
+      min-width: 6px;
+      background: var(--accent-mid);
+      border-radius: 50%;
+      margin-top: 9px;
+    }
+
+    /* ── RIGHTS GRID ── */
+    .rights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    @media (max-width: 520px) { .rights-grid { grid-template-columns: 1fr; } }
+
+    .right-card {
+      background: var(--bg-card);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 16px 18px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .right-card:hover {
+      box-shadow: 0 4px 16px rgba(26,58,107,0.10);
+      transform: translateY(-2px);
+    }
+
+    .right-card .right-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .right-card p {
+      font-size: 13.5px;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* ── CONTACT CARD ── */
+    .contact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-top: 14px;
+    }
+
+    .contact-card .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 15px;
+      color: var(--ink-muted);
+      font-weight: 300;
+    }
+
+    .contact-card .contact-row:last-child { border-bottom: none; }
+
+    .contact-card .contact-row svg {
+      width: 18px; height: 18px; flex-shrink: 0;
+      color: var(--accent-mid);
+    }
+
+    .contact-card .contact-row strong {
+      color: var(--ink);
+      font-weight: 500;
+      min-width: 60px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 28px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--ink-faint);
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    footer a { color: var(--accent-mid); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-eyebrow">Legal Document</div>
+    <h1>Privacy <em>Policy</em></h1>
+    <div class="header-meta">
+      <span class="badge">
+        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="5" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M4 5V3.5a3 3 0 016 0V5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        End-to-End Encrypted
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M7 4v3.5l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Effective March 1, 2026
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 1.5l1.5 4h4l-3.25 2.4 1.25 4L7 9.6l-3.5 2.3 1.25-4L1.5 5.5h4z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+        US-Based
+      </span>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- TABLE OF CONTENTS -->
+  <nav class="toc" aria-label="Table of Contents">
+    <div class="toc-title">Contents</div>
+    <ol class="toc-list">
+      <li><a href="#s1"><span class="toc-num">01</span>Introduction</a></li>
+      <li><a href="#s2"><span class="toc-num">02</span>Information We Collect</a></li>
+      <li><a href="#s3"><span class="toc-num">03</span>How We Use Your Information</a></li>
+      <li><a href="#s4"><span class="toc-num">04</span>End-to-End Encryption</a></li>
+      <li><a href="#s5"><span class="toc-num">05</span>Data Retention</a></li>
+      <li><a href="#s6"><span class="toc-num">06</span>Data Sharing &amp; Disclosure</a></li>
+      <li><a href="#s7"><span class="toc-num">07</span>Your Rights &amp; Choices</a></li>
+      <li><a href="#s8"><span class="toc-num">08</span>Children's Privacy</a></li>
+      <li><a href="#s9"><span class="toc-num">09</span>Security</a></li>
+      <li><a href="#s10"><span class="toc-num">10</span>Contact Us</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. INTRODUCTION -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <h2>Introduction</h2>
+    </div>
+    <p>Welcome to our messaging application ("App", "we", "us", or "our"). We are committed to protecting your privacy and being transparent about how we handle your information. This Privacy Policy explains what information we collect, how we use it, and your rights with respect to that information.</p>
+    <div class="highlight">
+      <p>By using our App, you agree to the practices described in this Privacy Policy. If you do not agree, please discontinue use of the App.</p>
+    </div>
+  </section>
+
+  <!-- 2. INFORMATION WE COLLECT -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <h2>Information We Collect</h2>
+    </div>
+    <h3>Message Content</h3>
+    <p>Our App collects and processes the messages and content you send and receive. This includes text messages, images, files, and any other media you share through the messaging features. All message content is protected by end-to-end encryption.</p>
+
+    <h3>Technical Data</h3>
+    <p>We may automatically collect limited technical data necessary to operate the App, such as device type, operating system version, app version, and crash or diagnostic reports. This data never includes message content.</p>
+  </section>
+
+  <!-- 3. HOW WE USE YOUR INFORMATION -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <h2>How We Use Your Information</h2>
+    </div>
+    <p>We use the information we collect solely for the following purposes:</p>
+    <ul class="policy-list">
+      <li>To deliver messages between you and your contacts.</li>
+      <li>To maintain the security and integrity of the App.</li>
+      <li>To diagnose technical problems and fix bugs.</li>
+      <li>To comply with applicable laws and legal obligations.</li>
+    </ul>
+    <div class="highlight">
+      <p>We do not sell your personal information or message content to third parties. We do not use your messages for advertising purposes.</p>
+    </div>
+  </section>
+
+  <!-- 4. END-TO-END ENCRYPTION -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <h2>End-to-End Encryption</h2>
+    </div>
+    <p>Your privacy is our highest priority. Our App uses end-to-end encryption (E2EE) to ensure that only you and your intended recipient can read your messages.</p>
+    <div class="encryption-card">
+      <div class="lock-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="11" width="18" height="11" rx="2" stroke="white" stroke-width="1.8"/>
+          <path d="M7 11V7a5 5 0 0110 0v4" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="12" cy="16" r="1.5" fill="white"/>
+        </svg>
+      </div>
+      <h3>How Our Encryption Protects You</h3>
+      <p>Every message is secured before it leaves your device — we can't read it even if we wanted to.</p>
+      <ul>
+        <li>Encryption keys are generated and stored only on your device, never on our servers.</li>
+        <li>Messages in transit are fully encrypted and unreadable to us or any third party.</li>
+        <li>In the event of a server breach, your message content remains protected.</li>
+        <li>We cannot recover your messages if you lose access to your device or account.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5. DATA RETENTION -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <h2>Data Retention</h2>
+    </div>
+    <p>Messages are stored only as long as necessary to deliver them to the recipient, and are deleted from our servers upon successful delivery. We do not maintain archives of your message content on our servers.</p>
+    <p>Technical and diagnostic data may be retained for up to 12 months for operational purposes, after which it is deleted or anonymized.</p>
+  </section>
+
+  <!-- 6. DATA SHARING -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <h2>Data Sharing &amp; Disclosure</h2>
+    </div>
+    <p>We do not sell or rent your personal information. We may share limited technical data only in these circumstances:</p>
+    <ul class="policy-list">
+      <li><strong>Service Providers:</strong> Trusted vendors who assist in operating the App (e.g., cloud infrastructure), under strict confidentiality obligations and only to the extent necessary.</li>
+      <li><strong>Legal Compliance:</strong> When required by law, court order, or legal process, and only to the extent required. Due to E2EE, we cannot provide message content even if compelled.</li>
+      <li><strong>Business Transfers:</strong> In connection with a merger or acquisition, subject to equivalent privacy protections for your information.</li>
+    </ul>
+  </section>
+
+  <!-- 7. YOUR RIGHTS -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <h2>Your Rights &amp; Choices</h2>
+    </div>
+    <p>Depending on your location, you may have the following rights regarding your personal information:</p>
+    <div class="rights-grid">
+      <div class="right-card">
+        <div class="right-label">Access</div>
+        <p>Request a copy of the personal information we hold about you.</p>
+      </div>
+      <div class="right-card">
+        <div class="right-label">Deletion</div>
+        <p>Request deletion of your account and all associated data.</p>
+      </div>
+      <div class="right-card">
+        <div class="right-label">Correction</div>
+        <p>Request correction of inaccurate or incomplete information.</p>
+      </div>
+      <div class="right-card">
+        <div class="right-label">Portability</div>
+        <p>Request a portable copy of your data where technically feasible.</p>
+      </div>
+      <div class="right-card">
+        <div class="right-label">Opt-Out</div>
+        <p>Opt out of any non-essential data processing at any time.</p>
+      </div>
+      <div class="right-card">
+        <div class="right-label">Response Time</div>
+        <p>We will respond to all valid requests within 30 days.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. CHILDREN -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <h2>Children's Privacy</h2>
+    </div>
+    <p>Our App is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If we learn that we have inadvertently collected such information, we will promptly delete it.</p>
+    <p>If you believe a child under 13 has provided us with personal information, please contact us immediately using the details in Section 10.</p>
+  </section>
+
+  <!-- 9. SECURITY -->
+  <section class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <h2>Security</h2>
+    </div>
+    <p>We implement industry-standard security measures including end-to-end encryption for all message content, secure transmission protocols (TLS), strict access controls for internal systems, and regular security assessments.</p>
+    <div class="highlight">
+      <p>While we strive to protect your information, no security system is impenetrable. We encourage you to use a strong, unique password and enable any available security features within the App.</p>
+    </div>
+    <p>We may update this Privacy Policy from time to time. If we make material changes, we will notify you through the App at least 30 days before those changes take effect.</p>
+  </section>
+
+  <!-- 10. CONTACT -->
+  <section class="section" id="s10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2>Contact Us</h2>
+    </div>
+    <p>If you have any questions, concerns, or requests regarding this Privacy Policy, please reach out to us. We are committed to resolving any complaints about your privacy and our information practices.</p>
+    <div class="contact-card">
+      <div class="contact-row">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6l7 5 7-5M3 6h14a1 1 0 011 1v8a1 1 0 01-1 1H3a1 1 0 01-1-1V7a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <strong>Email</strong> stayfluorescent@gmail.com
+      </div>
+      <div class="contact-row">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 5a2 2 0 012-2h2.28a1 1 0 01.95.68l1.1 3.3a1 1 0 01-.23 1.05L7.91 9.27a11.05 11.05 0 005.82 5.82l2.24-1.21a1 1 0 011.05.23l3.3 1.1a1 1 0 01.68.95V17a2 2 0 01-2 2C8.16 19 1 11.84 1 5a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <strong>Address</strong> United States
+      </div>
+      <div class="contact-row">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M2 10h16M10 2a15.3 15.3 0 000 16M10 2a15.3 15.3 0 010 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <strong>LinkedIn</strong> <a href="https://www.linkedin.com/in/anna-villarreal-38254b258/" target="_blank">Anna Villarreal</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  &copy; 2026 [Your Company Name] &middot; All rights reserved &middot;
+  <a href="#">Terms of Service</a>
+</footer>
+
+</body>
+</html>
