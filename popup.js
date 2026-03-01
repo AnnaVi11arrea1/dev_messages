@@ -67,28 +67,94 @@ function defaultAvatar(username) {
 }
 
 /* ─── Visual preference helpers ────────────────────────────────────────────── */
-function applyBgHue(hue) {
-  document.documentElement.style.setProperty('--bg-hue', hue);
-  const slider = qs('#bg-hue-slider');
-  if (slider) slider.value = hue;
+
+/**
+ * Injects a <style> tag so font-size changes override ALL explicit px rules
+ * in the stylesheet — the only reliable way to scale text across the whole
+ * extension when child elements have hard-coded font-size values.
+ */
+function applyBubbleColors(sentColor, receivedColor) {
+  const s = sentColor ?? '#3b49df';
+  const r = receivedColor ?? '#ffffff';
+  document.documentElement.style.setProperty('--sent-bubble', s);
+  document.documentElement.style.setProperty('--received-bubble', r);
+  const si = qs('#sent-color-input');     if (si) { si.value = s; }
+  const ri = qs('#received-color-input'); if (ri) { ri.value = r; }
+  const ss = qs('#sent-swatch');          if (ss) ss.style.background = s;
+  const rs = qs('#received-swatch');      if (rs) rs.style.background = r;
+}
+
+function applyBgGradient(start, end, dir) {
+  if (start && end) {
+    document.documentElement.style.setProperty(
+      '--bg-gradient', `linear-gradient(${dir ?? '135deg'}, ${start}, ${end})`
+    );
+  } else {
+    document.documentElement.style.removeProperty('--bg-gradient');
+  }
+  const gs = qs('#grad-start-input'); if (gs && start) gs.value = start;
+  const ge = qs('#grad-end-input');   if (ge && end)   ge.value = end;
+  const gd = qs('#grad-direction');   if (gd && dir)   gd.value = dir;
+  const ss = qs('#grad-start-swatch'); if (ss) ss.style.background = start ?? 'transparent';
+  const es = qs('#grad-end-swatch');   if (es) es.style.background = end   ?? 'transparent';
 }
 
 function applyFontSize(size) {
-  document.documentElement.style.setProperty('--font-size', `${size}px`);
+  let el = document.getElementById('dyn-font-size');
+  if (!el) { el = document.createElement('style'); el.id = 'dyn-font-size'; document.head.appendChild(el); }
+  el.textContent = [
+    `body { font-size: ${size}px !important; }`,
+    `.message-bubble { font-size: ${Math.max(10, size - 1)}px !important; }`,
+    `.message-textarea { font-size: ${Math.max(10, size - 1)}px !important; }`,
+    `.conv-name { font-size: ${size}px !important; }`,
+    `.conv-preview { font-size: ${Math.max(10, size - 2)}px !important; }`,
+    `.status-bar { font-size: ${Math.max(10, size - 1)}px !important; }`,
+    `.user-card-name { font-size: ${size}px !important; }`,
+    `.approval-text { font-size: ${Math.max(10, size - 1)}px !important; }`,
+  ].join('\n');
   document.querySelectorAll('.font-size-btn').forEach((btn) => {
     btn.classList.toggle('active', Number(btn.dataset.size) === size);
   });
 }
+
+function applyBgColor(hue, sat) {
+  document.documentElement.style.setProperty('--bg-hue', hue ?? 0);
+  document.documentElement.style.setProperty('--bg-sat', `${sat ?? 0}%`);
+  /* Update sat slider gradient to reflect current hue */
+  const satSlider = qs('#bg-sat-slider');
+  if (satSlider) {
+    satSlider.style.background = `linear-gradient(to right, hsl(${hue ?? 0},0%,60%), hsl(${hue ?? 0},100%,60%))`;
+    satSlider.value = sat ?? 0;
+  }
+  const hueSlider = qs('#bg-hue-slider');
+  if (hueSlider) hueSlider.value = hue ?? 0;
+}
+
+function applyTextColor(hue, sat) {
+  document.documentElement.style.setProperty('--text-hue', hue ?? 0);
+  document.documentElement.style.setProperty('--text-sat', `${sat ?? 0}%`);
+  /* Update sat slider gradient to reflect current hue */
+  const satSlider = qs('#text-sat-slider');
+  if (satSlider) {
+    satSlider.style.background = `linear-gradient(to right, hsl(${hue ?? 0},0%,40%), hsl(${hue ?? 0},100%,30%))`;
+    satSlider.value = sat ?? 0;
+  }
+  const hueSlider = qs('#text-hue-slider');
+  if (hueSlider) hueSlider.value = hue ?? 0;
+}
 /* ─── Init ─────────────────────────────────────────────────────────────────── */
 async function init() {
   /* Apply all visual preferences before any view renders to avoid flash */
-  const prefs = await chrome.storage.local.get(['darkMode', 'bgHue', 'fontSize']);
+  const prefs = await chrome.storage.local.get(['darkMode', 'bgHue', 'bgSat', 'fontSize', 'textHue', 'textSat', 'sentBubbleColor', 'receivedBubbleColor', 'gradStart', 'gradEnd', 'gradDir']);
   if (prefs.darkMode) {
     document.body.classList.add('dark');
     qs('#dark-toggle').textContent = '☀️ On';
   }
-  applyBgHue(prefs.bgHue ?? 0);
+  applyBgColor(prefs.bgHue ?? 0, prefs.bgSat ?? 0);
   applyFontSize(prefs.fontSize ?? 14);
+  applyTextColor(prefs.textHue ?? 0, prefs.textSat ?? 0);
+  applyBubbleColors(prefs.sentBubbleColor ?? null, prefs.receivedBubbleColor ?? null);
+  applyBgGradient(prefs.gradStart ?? null, prefs.gradEnd ?? null, prefs.gradDir ?? '135deg');
 
   showView('view-loading');
   bindStaticListeners();
@@ -188,16 +254,22 @@ function bindStaticListeners() {
     await chrome.storage.local.set({ darkMode: isDark });
   });
 
-  /* Background hue slider */
+  /* Background color sliders */
   qs('#bg-hue-slider').addEventListener('input', async (e) => {
     const hue = Number(e.target.value);
-    applyBgHue(hue);
+    const sat = Number(qs('#bg-sat-slider').value);
+    applyBgColor(hue, sat);
     await chrome.storage.local.set({ bgHue: hue });
   });
-  qs('#bg-hue-reset').addEventListener('click', async () => {
-    applyBgHue(0);
-    qs('#bg-hue-slider').value = 0;
-    await chrome.storage.local.set({ bgHue: 0 });
+  qs('#bg-sat-slider').addEventListener('input', async (e) => {
+    const sat = Number(e.target.value);
+    const hue = Number(qs('#bg-hue-slider').value);
+    applyBgColor(hue, sat);
+    await chrome.storage.local.set({ bgSat: sat });
+  });
+  qs('#bg-color-reset').addEventListener('click', async () => {
+    applyBgColor(0, 0);
+    await chrome.storage.local.set({ bgHue: 0, bgSat: 0 });
   });
 
   /* Font size buttons */
@@ -209,10 +281,89 @@ function bindStaticListeners() {
     });
   });
 
+  /* Text color sliders */
+  qs('#text-hue-slider').addEventListener('input', async (e) => {
+    const hue = Number(e.target.value);
+    const sat = Number(qs('#text-sat-slider').value);
+    applyTextColor(hue, sat);
+    await chrome.storage.local.set({ textHue: hue });
+  });
+  qs('#text-sat-slider').addEventListener('input', async (e) => {
+    const sat = Number(e.target.value);
+    const hue = Number(qs('#text-hue-slider').value);
+    applyTextColor(hue, sat);
+    await chrome.storage.local.set({ textSat: sat });
+  });
+  qs('#text-color-reset').addEventListener('click', async () => {
+    applyTextColor(0, 0);
+    await chrome.storage.local.set({ textHue: 0, textSat: 0 });
+  });
+
+  /* Bubble color panel */
+  qs('#bubble-color-btn').addEventListener('click', () => {
+    qs('#bubble-color-panel').classList.toggle('hidden');
+  });
+  qs('#sent-color-input').addEventListener('input', async (e) => {
+    const color = e.target.value;
+    document.documentElement.style.setProperty('--sent-bubble', color);
+    qs('#sent-swatch').style.background = color;
+    await chrome.storage.local.set({ sentBubbleColor: color });
+  });
+  qs('#received-color-input').addEventListener('input', async (e) => {
+    const color = e.target.value;
+    document.documentElement.style.setProperty('--received-bubble', color);
+    qs('#received-swatch').style.background = color;
+    await chrome.storage.local.set({ receivedBubbleColor: color });
+  });
+
+  /* Background gradient */
+  function getGradValues() {
+    return {
+      start: qs('#grad-start-input').value,
+      end:   qs('#grad-end-input').value,
+      dir:   qs('#grad-direction').value,
+    };
+  }
+  qs('#grad-start-input').addEventListener('input', async (e) => {
+    const { end, dir } = getGradValues();
+    applyBgGradient(e.target.value, end, dir);
+    await chrome.storage.local.set({ gradStart: e.target.value });
+  });
+  qs('#grad-end-input').addEventListener('input', async (e) => {
+    const { start, dir } = getGradValues();
+    applyBgGradient(start, e.target.value, dir);
+    await chrome.storage.local.set({ gradEnd: e.target.value });
+  });
+  qs('#grad-direction').addEventListener('change', async (e) => {
+    const { start, end } = getGradValues();
+    applyBgGradient(start, end, e.target.value);
+    await chrome.storage.local.set({ gradDir: e.target.value });
+  });
+
+  qs('#bubble-color-reset').addEventListener('click', async () => {
+    applyBubbleColors(null, null);
+    applyBgGradient(null, null, '135deg');
+    await chrome.storage.local.set({ sentBubbleColor: null, receivedBubbleColor: null, gradStart: null, gradEnd: null, gradDir: '135deg' });
+  });
+
   /* GIF picker */
   qs('#gif-btn').addEventListener('click', toggleGifPicker);
   qs('#gif-close-btn').addEventListener('click', closeGifPicker);
   qs('#gif-search').addEventListener('input', filterGifs);
+
+  /* Emoji picker */
+  qs('#emoji-btn').addEventListener('click', (e) => { e.stopPropagation(); toggleEmojiPicker(); });
+  qs('#emoji-search').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    renderEmojiGrid(q ? EMOJIS.filter(item => item.t.includes(q) || item.e === q) : EMOJIS);
+  });
+  document.addEventListener('click', (e) => {
+    if (!qs('#emoji-picker').classList.contains('hidden') &&
+        !qs('#emoji-picker').contains(e.target) &&
+        e.target !== qs('#emoji-btn')) {
+      closeEmojiPicker();
+    }
+  });
 
   /* User search */
   qs('#user-search-btn').addEventListener('click', searchUser);
@@ -301,6 +452,60 @@ function closeGifPicker() {
   qs('#gif-picker').classList.add('hidden');
   qs('#gif-search').value = '';
   filterGifs();
+}
+
+/* ─── Emoji Picker ────────────────────────────────────────────────────────── */
+const EMOJIS = [
+  {e:'😀',t:'grinning happy smile face'},{e:'😁',t:'beaming happy smile'},{e:'😂',t:'joy laugh tears cry funny'},{e:'🤣',t:'rolling laugh floor funny'},{e:'😃',t:'grinning happy smile big eyes'},{e:'😄',t:'grinning smile eyes'},{e:'😅',t:'sweat smile nervous'},{e:'😆',t:'laughing happy squinting'},{e:'😇',t:'innocent halo angel'},{e:'😈',t:'smiling devil evil'},{e:'😉',t:'wink'},{e:'😊',t:'blush smile happy'},
+  {e:'😋',t:'yum delicious food'},{e:'😌',t:'relieved calm'},{e:'😍',t:'heart eyes love'},{e:'🥰',t:'hearts smiling love'},{e:'😎',t:'sunglasses cool'},{e:'🤩',t:'star struck excited wow'},{e:'🥳',t:'partying celebrate birthday'},{e:'😏',t:'smirk'},
+  {e:'😒',t:'unamused meh'},{e:'😞',t:'disappointed sad'},{e:'😔',t:'pensive sad'},{e:'😟',t:'worried'},{e:'😕',t:'confused'},{e:'🙁',t:'slightly frowning sad'},{e:'😣',t:'persevere'},{e:'😖',t:'confounded'},{e:'😫',t:'tired weary'},{e:'😩',t:'weary tired'},{e:'🥺',t:'pleading puppy eyes sad'},{e:'😢',t:'cry sad tear'},
+  {e:'😭',t:'loudly crying sob sad'},{e:'😤',t:'steam triumph frustrated'},{e:'😠',t:'angry mad'},{e:'😡',t:'pouting rage angry red'},{e:'🤬',t:'cursing symbols angry'},{e:'🤯',t:'exploding head mind blown'},{e:'😳',t:'flushed embarrassed shocked'},{e:'🥵',t:'hot flushed sweat'},{e:'🥶',t:'cold frozen blue'},{e:'😱',t:'screaming fear shocked'},{e:'😨',t:'fearful scared'},{e:'😰',t:'anxious sweat cold'},
+  {e:'😥',t:'sad relieved'},{e:'😓',t:'downcast sweat'},{e:'🤔',t:'thinking hmm'},{e:'🤭',t:'hand over mouth giggle'},{e:'🤫',t:'shushing quiet'},{e:'🤥',t:'lying pinocchio'},{e:'😶',t:'no mouth silent'},{e:'😐',t:'neutral'},{e:'😑',t:'expressionless'},{e:'😬',t:'grimacing awkward'},{e:'🙄',t:'eye roll'},{e:'😯',t:'hushed surprised'},{e:'😦',t:'frowning open mouth'},{e:'😧',t:'anguished'},{e:'😮',t:'open mouth surprised'},{e:'😲',t:'astonished shocked'},
+  {e:'🥱',t:'yawn tired bored'},{e:'😴',t:'sleeping zzz tired'},{e:'🤤',t:'drooling hungry'},
+  {e:'👍',t:'thumbs up like good ok yes'},{e:'👎',t:'thumbs down dislike no bad'},{e:'👏',t:'clap applause'},{e:'🙌',t:'raised hands celebrate'},{e:'🤝',t:'handshake deal'},{e:'✊',t:'raised fist power'},{e:'👊',t:'oncoming fist punch'},{e:'✋',t:'raised hand stop'},{e:'👋',t:'wave hello bye'},{e:'🤙',t:'call me shaka'},{e:'💪',t:'muscle strong flex'},{e:'🙏',t:'pray thanks folded hands'},
+  {e:'👌',t:'ok perfect'},{e:'✌️',t:'peace victory two'},{e:'🤞',t:'fingers crossed luck'},{e:'👈',t:'left point'},{e:'👉',t:'right point'},{e:'👆',t:'up point'},{e:'👇',t:'down point'},{e:'👀',t:'eyes look see'},
+  {e:'❤️',t:'red heart love'},{e:'🧡',t:'orange heart'},{e:'💛',t:'yellow heart'},{e:'💚',t:'green heart'},{e:'💙',t:'blue heart'},{e:'💜',t:'purple heart'},{e:'🖤',t:'black heart'},{e:'🤍',t:'white heart'},{e:'💔',t:'broken heart sad'},{e:'💕',t:'two hearts love'},{e:'💯',t:'hundred percent perfect'},
+  {e:'🔥',t:'fire hot flame lit'},{e:'⭐',t:'star'},{e:'✨',t:'sparkles glitter'},{e:'💥',t:'collision boom explosion'},{e:'🎉',t:'party tada celebrate'},{e:'🎊',t:'confetti celebrate'},{e:'🎁',t:'gift present'},{e:'🏆',t:'trophy winner'},{e:'🥇',t:'gold medal first'},{e:'🎯',t:'bullseye target'},{e:'🎮',t:'video game controller'},{e:'🎲',t:'dice game'},
+  {e:'🆗',t:'ok button'},{e:'💬',t:'speech bubble chat message'},{e:'💭',t:'thought bubble thinking'},{e:'📣',t:'megaphone loud'},{e:'📱',t:'phone mobile'},
+  {e:'🌟',t:'glowing star'},{e:'🌈',t:'rainbow'},{e:'🌸',t:'cherry blossom flower'},{e:'🌺',t:'hibiscus flower'},{e:'🌻',t:'sunflower'},{e:'🌹',t:'rose flower'},{e:'🍀',t:'four leaf clover luck'},{e:'🌊',t:'wave water ocean'},{e:'⚡',t:'lightning bolt zap electric'},{e:'❄️',t:'snowflake cold ice'},{e:'🌙',t:'crescent moon night'},{e:'☀️',t:'sun sunny'},{e:'🌍',t:'earth globe world'},{e:'🦋',t:'butterfly'},
+  {e:'🍕',t:'pizza food'},{e:'🍔',t:'burger food'},{e:'🌮',t:'taco food'},{e:'🍣',t:'sushi food'},{e:'🍜',t:'noodles ramen food'},{e:'🎂',t:'birthday cake'},{e:'🍰',t:'cake slice'},{e:'🍩',t:'doughnut donut'},{e:'☕',t:'coffee hot drink'},{e:'🍵',t:'tea hot drink'},{e:'🧋',t:'bubble tea boba'},{e:'🍺',t:'beer cheers'},{e:'🥂',t:'clinking glasses cheers toast'},{e:'🍾',t:'champagne bottle celebrate'},
+];
+
+function toggleEmojiPicker() {
+  const panel = qs('#emoji-picker');
+  const isHidden = panel.classList.contains('hidden');
+  panel.classList.toggle('hidden');
+  if (isHidden) {
+    renderEmojiGrid(EMOJIS);
+    qs('#emoji-search').value = '';
+    qs('#emoji-search').focus();
+  }
+}
+
+function closeEmojiPicker() {
+  qs('#emoji-picker').classList.add('hidden');
+}
+
+function renderEmojiGrid(list) {
+  const grid = qs('#emoji-grid');
+  grid.innerHTML = '';
+  list.forEach(({ e, t }) => {
+    const btn = document.createElement('button');
+    btn.className = 'emoji-btn-item';
+    btn.textContent = e;
+    btn.title = t.split(' ')[0];
+    btn.setAttribute('type', 'button');
+    btn.addEventListener('click', () => {
+      const ta = qs('#message-input');
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      ta.value = ta.value.slice(0, start) + e + ta.value.slice(end);
+      ta.selectionStart = ta.selectionEnd = start + e.length;
+      ta.focus();
+      closeEmojiPicker();
+    });
+    grid.appendChild(btn);
+  });
 }
 
 function filterGifs() {
@@ -796,9 +1001,11 @@ async function toggleBlockUser() {
 async function openSettings() {
   showView('view-settings');
   /* Sync slider and font buttons to current saved prefs */
-  const { bgHue = 0, fontSize = 14 } = await chrome.storage.local.get(['bgHue', 'fontSize']);
-  qs('#bg-hue-slider').value = bgHue;
+  const { bgHue = 0, bgSat = 0, fontSize = 14, textHue = 0, textSat = 0 } =
+    await chrome.storage.local.get(['bgHue', 'bgSat', 'fontSize', 'textHue', 'textSat']);
+  applyBgColor(bgHue, bgSat);
   applyFontSize(fontSize);
+  applyTextColor(textHue, textSat);
   const list  = qs('#blocked-users-list');
   const empty = qs('#no-blocked-msg');
   list.innerHTML = '<p class="muted small">Loading…</p>';
