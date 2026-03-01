@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dev.to Messages</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+  <!-- ═══ VIEW: Loading ═══════════════════════════════════════════════════ -->
+  <div id="view-loading" class="view active">
+    <div class="center-content">
+      <div class="spinner"></div>
+      <p class="muted">Loading…</p>
+    </div>
+  </div>
+
+  <!-- ═══ VIEW: Not on Dev.to ════════════════════════════════════════════ -->
+  <div id="view-not-devto" class="view">
+    <div class="center-content">
+      <div class="big-icon">💬</div>
+      <h2>Dev.to Messages</h2>
+      <p class="muted">Open this extension while browsing <strong>dev.to</strong> and logged in to get started.</p>
+      <a id="goto-devto-btn" href="#" class="btn btn-primary">Go to Dev.to</a>
+    </div>
+  </div>
+
+  <!-- ═══ VIEW: Not Eligible ══════════════════════════════════════════════ -->
+  <div id="view-not-eligible" class="view">
+    <div class="header">
+      <h1 class="header-title">Dev.to Messages</h1>
+      <span id="ineligible-user" class="muted small"></span>
+    </div>
+    <div class="center-content">
+      <div class="big-icon">🔒</div>
+      <h2>Not Eligible Yet</h2>
+      <div id="eligibility-reasons" class="eligibility-list"></div>
+      <p class="muted small">Both criteria must be met to send and receive messages.</p>
+    </div>
+  </div>
+
+
+  <!-- ═══ VIEW: Inbox ══════════════════════════════════════════════════════ -->
+  <div id="view-inbox" class="view">
+    <div class="header">
+      <div class="header-user">
+        <div id="inbox-avatar" class="inbox-online-dot"></div>
+        <span id="inbox-username" class="username"></span>
+      </div>
+      <button id="new-message-btn" class="btn btn-icon" title="New Message">✉️ New</button>
+    </div>
+
+    <div id="pending-requests-section" class="hidden">
+      <div class="section-label">⏳ Pending Requests</div>
+      <div id="pending-requests-list"></div>
+    </div>
+
+    <div id="conversations-list" class="conversations-list">
+      <div id="empty-inbox" class="empty-state">
+        <p>📭 No messages yet.</p>
+        <p class="muted">Click <strong>✉️ New</strong> to start a conversation.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ VIEW: Conversation ══════════════════════════════════════════════ -->
+  <div id="view-conversation" class="view">
+    <div class="header">
+      <button id="back-btn" class="btn btn-icon">← Back</button>
+      <div class="header-user">
+        <img id="conv-avatar" class="avatar" src="" alt="avatar" />
+        <span id="conv-username" class="username"></span>
+      </div>
+    </div>
+
+    <!-- Shown to the recipient before they approve/deny -->
+    <div id="approval-bar" class="approval-bar hidden">
+      <p id="approval-msg" class="approval-text"></p>
+      <div class="approval-buttons">
+        <button id="approve-btn" class="btn btn-success btn-sm">✓ Approve</button>
+        <button id="deny-btn" class="btn btn-danger btn-sm">✗ Deny</button>
+      </div>
+    </div>
+
+    <!-- Shown to the sender while waiting -->
+    <div id="awaiting-bar" class="status-bar awaiting-bar hidden">
+      ⏳ Awaiting approval from recipient…
+    </div>
+
+    <!-- Shown when request was denied -->
+    <div id="denied-bar" class="status-bar denied-bar hidden">
+      ❌ Your message request was denied.
+    </div>
+
+    <div id="messages-area" class="messages-area"></div>
+
+    <div id="message-input-area" class="message-input-area hidden">
+      <textarea id="message-input" class="message-textarea" placeholder="Type a message… (Enter to send, Shift+Enter for newline)" rows="2"></textarea>
+      <button id="send-btn" class="btn btn-primary">Send</button>
+    </div>
+  </div>
+
+  <!-- ═══ VIEW: New Message ════════════════════════════════════════════════ -->
+  <div id="view-new-message" class="view">
+    <div class="header">
+      <button id="new-msg-back-btn" class="btn btn-icon">← Back</button>
+      <h1 class="header-title">New Message</h1>
+    </div>
+    <div class="content-pad">
+      <div class="search-row">
+        <input type="text" id="user-search-input" class="input" placeholder="Dev.to username…" autocomplete="off" />
+        <button id="user-search-btn" class="btn btn-primary">Find</button>
+      </div>
+      <p id="user-search-error" class="error-text hidden"></p>
+      <div id="user-search-result" class="hidden">
+        <div id="found-user-card" class="user-card"></div>
+        <textarea id="first-message-input" class="message-textarea" placeholder="Write your first message…" rows="4"></textarea>
+        <button id="send-first-btn" class="btn btn-primary btn-full">Send Message Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MODAL: Link Safety Warning ══════════════════════════════════════ -->
+  <div id="modal-link-warning" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-icon">⚠️</span>
+        <h3>Link Safety Warning</h3>
+      </div>
+      <div class="modal-body">
+        <p class="warning-text">
+          Always be cautious when clicking links from unknown sources.
+          Verify the destination URL before proceeding.
+        </p>
+        <div id="spoof-warning" class="spoof-warning hidden">
+          <strong>🚨 Possible spoofed link!</strong> The visible text shows a different domain than the actual destination.
+        </div>
+        <div class="link-info">
+          <span class="link-label">Destination URL</span>
+          <code id="link-warning-url" class="link-url"></code>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="link-cancel-btn" class="btn btn-secondary">Cancel</button>
+        <button id="link-proceed-btn" class="btn btn-danger">Open Link</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MODAL: Flag / Report Message ════════════════════════════════════ -->
+  <div id="modal-flag" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-icon">🚩</span>
+        <h3>Report Message</h3>
+      </div>
+      <div class="modal-body">
+        <p>Why are you reporting this message?</p>
+        <div class="flag-reasons">
+          <label><input type="radio" name="flag-reason" value="spam" /> Spam or unsolicited advertising</label>
+          <label><input type="radio" name="flag-reason" value="phishing" /> Phishing or suspicious link</label>
+          <label><input type="radio" name="flag-reason" value="harassment" /> Harassment or bullying</label>
+          <label><input type="radio" name="flag-reason" value="inappropriate" /> Inappropriate content</label>
+          <label><input type="radio" name="flag-reason" value="other" /> Other</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="flag-cancel-btn" class="btn btn-secondary">Cancel</button>
+        <button id="flag-submit-btn" class="btn btn-danger">Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Scripts (order matters — utilities before app) -->
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/eligibility.js"></script>
+  <script src="js/linkSafety.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
