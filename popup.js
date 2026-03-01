@@ -222,6 +222,15 @@ function bindStaticListeners() {
     if (btn) openFlagModal(btn.dataset.convId, btn.dataset.msgId);
   });
 
+  /* Meme lightbox: open on click, close on button or backdrop */
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('msg-gif')) openLightbox(e.target.src);
+  });
+  qs('#meme-lightbox-close').addEventListener('click', closeLightbox);
+  qs('#meme-lightbox').addEventListener('click', (e) => {
+    if (e.target === qs('#meme-lightbox')) closeLightbox();
+  });
+
   /* Fix broken avatar images */
   document.addEventListener('error', (e) => {
     if (e.target.tagName === 'IMG' && e.target.classList.contains('avatar')) {
@@ -245,9 +254,19 @@ function closeGifPicker() {
   qs('#gif-picker').classList.add('hidden');
 }
 
+function openLightbox(src) {
+  qs('#meme-lightbox-img').src = src;
+  qs('#meme-lightbox').classList.remove('hidden');
+}
+
+function closeLightbox() {
+  qs('#meme-lightbox').classList.add('hidden');
+  qs('#meme-lightbox-img').src = '';
+}
+
 async function loadGifGrid() {
   const grid = qs('#gif-grid');
-  grid.innerHTML = '<p class="gif-loading">Loading memes…</p>';
+  grid.innerHTML = '<p class="gif-loading">Loading memes… (fetching community comments)</p>';
   const images = await GifPicker.fetchImages();
   grid.innerHTML = '';
   if (!images.length) {
@@ -255,6 +274,9 @@ async function loadGifGrid() {
     return;
   }
   for (const { url, title } of images) {
+    const cell = document.createElement('div');
+    cell.className = 'gif-cell';
+
     const img = document.createElement('img');
     img.src = url;
     img.alt = title;
@@ -265,7 +287,19 @@ async function loadGifGrid() {
       closeGifPicker();
       sendReply();
     });
-    grid.appendChild(img);
+
+    const magnify = document.createElement('button');
+    magnify.className = 'gif-magnify';
+    magnify.textContent = '🔍';
+    magnify.title = 'Preview';
+    magnify.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(url);
+    });
+
+    cell.appendChild(img);
+    cell.appendChild(magnify);
+    grid.appendChild(cell);
   }
 }
 
