@@ -731,6 +731,9 @@ async function openConversation(convId) {
   blockBtn.title = isBlocked ? `Unblock @${other}` : `Block @${other}`;
   blockBtn.style.color = isBlocked ? '#ef4444' : '#f59e0b';
 
+  /* Reset any previous blocked-by notice */
+  resetBlockedByNotice();
+
   /* Mark messages as read (fire-and-forget; update locally for instant feedback) */
   conv.messages.forEach((m) => { if (m.from !== currentUser.username) m.read = true; });
   Storage.markConversationRead(convId).catch(() => {});
@@ -836,7 +839,18 @@ async function sendReply() {
     flagged:   false,
     flagReason:'',
   };
-  await Storage.addMessage(activeConvId, msg);
+
+  try {
+    await Storage.addMessage(activeConvId, msg);
+  } catch (err) {
+    if (err.message === 'blocked') {
+      showBlockedByOtherNotice(convOtherUser);
+    } else {
+      showToast('Failed to send message.', 'error');
+    }
+    return;
+  }
+
   input.value = '';
 
   const updated = await Storage.getConversation(activeConvId);
@@ -982,6 +996,24 @@ async function deleteConversation() {
   }
   showToast('Conversation deleted.');
   loadInbox();
+}
+
+/* ─── Blocked-by notice ────────────────────────────────────────────────────── */
+function showBlockedByOtherNotice(otherUser) {
+  const notice = qs('#blocked-by-notice');
+  qs('#blocked-by-text').textContent = `@${otherUser} has blocked you. You can no longer send messages.`;
+  notice.classList.remove('hidden');
+  /* Disable the input area */
+  qs('#message-input').disabled = true;
+  qs('#send-btn').disabled = true;
+  qs('#message-input').placeholder = 'Messaging unavailable.';
+}
+
+function resetBlockedByNotice() {
+  qs('#blocked-by-notice').classList.add('hidden');
+  qs('#message-input').disabled = false;
+  qs('#send-btn').disabled = false;
+  qs('#message-input').placeholder = 'Type a message… (Enter to send, Shift+Enter for newline)';
 }
 
 /* ─── Block / Unblock ──────────────────────────────────────────────────────── */

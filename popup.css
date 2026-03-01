@@ -97,6 +97,10 @@ body.popout-mode .message-input-area {
 .btn-full { width: 100%; }
 .btn-sm   { padding: 5px 12px; font-size: 12px; }
 
+#new-message-btn svg {
+  margin-right: 6px;
+}
+
 /* ─── Input ───────────────────────────────────────────────────────────────── */
 .input {
   width: 100%; padding: 8px 11px; border: 1px solid #d1d5db;
@@ -264,6 +268,17 @@ body.dark .grad-direction-select { background: #1e293b; color: #e2e8f0; border-c
   display: flex; gap: 8px; padding: 9px 14px; position: relative;
   border-top: 1px solid #e2e2e2; background: hsl(var(--bg-hue), var(--bg-sat), 97%); flex-shrink: 0; align-items: flex-end;
 }
+.blocked-by-notice {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 14px; flex-shrink: 0;
+  background: #fff7ed; border-top: 1px solid #fed7aa;
+  color: #9a3412; font-size: 12px; font-weight: 500;
+}
+.blocked-by-notice svg { flex-shrink: 0; color: #ea580c; }
+body.dark .blocked-by-notice {
+  background: #2d1a0e; border-color: #7c3000; color: #fdba74;
+}
+body.dark .blocked-by-notice svg { color: #fb923c; }
 .input-actions {
   display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;
 }
